@@ -1,5 +1,5 @@
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { ThemeProvider } from "styled-components/native";
 import { StyleSheet, Text, View, Image } from "react-native";
@@ -16,58 +16,52 @@ import { restaurantRequest } from "./src/services/restaurants/restaurants_servic
 
 import { RestaurantContextProvider } from "./src/services/restaurants/restuarant_context";
 import { LocationContextProvider } from "./src/services/location/location_context";
+import { Navigation } from "./src/infrastructure/navigation";
 
-const Tab = createBottomTabNavigator();
+import * as firebase from "firebase";
 
-const Settings = () => (
-  <SafeArea>
-    <Text>Settings</Text>
-  </SafeArea>
-);
-const Map = () => (
-  <SafeArea>
-    <Text>Map</Text>
-  </SafeArea>
-);
+// Optionally import the services that you want to use
+//import "firebase/auth";
+//import "firebase/database";
+//import "firebase/firestore";
+//import "firebase/functions";
+//import "firebase/storage";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyADW-VPC1116nkyPX_MM8uyPcRu2i4QJ3w",
+  authDomain: "mealsgo-c6b03.firebaseapp.com",
+  projectId: "mealsgo-c6b03",
+  storageBucket: "mealsgo-c6b03.appspot.com",
+  messagingSenderId: "187126035365",
+  appId: "1:187126035365:web:8c69ccd8d96b69e34eee4c",
+};
+
+firebase.initializeApp(firebaseConfig);
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    firebase
+      .auth()
+      .signInWithEmailAndPassword("email", "password")
+      .then((user) => {
+        console.log(user);
+        setIsAuthenticated(true);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }, []);
+
   return (
     <>
       <ThemeProvider theme={theme}>
-                <LocationContextProvider>
-
-        <RestaurantContextProvider>
-          <NavigationContainer>
-            <Tab.Navigator
-              screenOptions={({ route }) => ({
-                tabBarIcon: ({ color, size }) => {
-                  let iconName;
-
-                  if (route.name === "Restaurants") {
-                    iconName = "md-restaurant";
-                  } else if (route.name === "Settings") {
-                    iconName = "md-settings";
-                  } else if (route.name === "Map") {
-                    iconName = "md-map";
-                  }
-
-                  // You can return any component that you like here!
-                  return <Ionicons name={iconName} size={size} color={color} />;
-                },
-              })}
-              tabBarOptions={{
-                activeTintColor: "tomato",
-                inactiveTintColor: "gray",
-              }}
-            >
-              <Tab.Screen name="Restaurants" component={RestaurantsScreen} />
-              <Tab.Screen name="Map" component={Map} />
-              <Tab.Screen name="Settings" component={Settings} />
-            </Tab.Navigator>
-          </NavigationContainer>
-        </RestaurantContextProvider>
-                </LocationContextProvider>
-
+        <LocationContextProvider>
+          <RestaurantContextProvider>
+            <Navigation />
+          </RestaurantContextProvider>
+        </LocationContextProvider>
       </ThemeProvider>
       <ExpoStatusBar style="auto" />
     </>

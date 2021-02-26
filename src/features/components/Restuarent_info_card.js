@@ -58,6 +58,7 @@ const RestaurantInfo = ({ restaurant = {} }) => {
     isOpenNow = true,
     rating = 4,
     isClosedTemporarily = true,
+    placeId,
   } = restaurant;
   const LeftContent = (props) => <Avatar.Icon {...props} icon="folder" />;
 
@@ -69,8 +70,13 @@ const RestaurantInfo = ({ restaurant = {} }) => {
         <Title>{name}</Title>
         <Section>
           <Rating>
-            {ratingArray.map(() => (
-              <SvgXml xml={star} width={20} height={20} />
+            {ratingArray.map((_, i) => (
+              <SvgXml
+                key={`star-${placeId}-${i}}`}
+                xml={star}
+                width={20}
+                height={20}
+              />
             ))}
           </Rating>
           <SectionEnd>
