@@ -1,4 +1,4 @@
 # meals-here-app
 
 
-![./assets/ReadMeBanner.png](./assets/ReadMeBanner.png)
+![https://github.com/sambulosenda/meals-here-app/blob/main/assets/ReadMeBanner.jpg](./assets/ReadMeBanner.png)
