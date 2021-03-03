@@ -18,6 +18,8 @@ import { RestaurantContextProvider } from "./src/services/restaurants/restuarant
 import { LocationContextProvider } from "./src/services/location/location_context";
 import { Navigation } from "./src/infrastructure/navigation";
 
+import { AuthenticationContextProvider } from "./src/services/authentification/authentification_context";
+
 import * as firebase from "firebase";
 
 // Optionally import the services that you want to use
@@ -36,32 +38,20 @@ const firebaseConfig = {
   appId: "1:187126035365:web:8c69ccd8d96b69e34eee4c",
 };
 
-firebase.initializeApp(firebaseConfig);
-
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 export default function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    firebase
-      .auth()
-      .signInWithEmailAndPassword("email", "password")
-      .then((user) => {
-        console.log(user);
-        setIsAuthenticated(true);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
-
   return (
     <>
       <ThemeProvider theme={theme}>
-        <LocationContextProvider>
-          <RestaurantContextProvider>
-            <Navigation />
-          </RestaurantContextProvider>
-        </LocationContextProvider>
+        <AuthenticationContextProvider>
+          <LocationContextProvider>
+            <RestaurantContextProvider>
+              <Navigation />
+            </RestaurantContextProvider>
+          </LocationContextProvider>
+        </AuthenticationContextProvider>
       </ThemeProvider>
       <ExpoStatusBar style="auto" />
     </>
